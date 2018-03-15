@@ -1,0 +1,75 @@
+{% load meta_tags %}
+        {% load static %}
+        {% load humanize %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}MetaSensitive{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     {% block meta_tags %}
+{% include_meta_tags %}
+{% endblock %}
+    {% block stylesheet %}{% endblock %}
+  </head>
+  <body class="wrap-full">
+    {% block body %}
+{% block content %}
+
+{% block breadcrumb %} <header class="header">
+
+       <h1 class="sitename"><a href="/">MetaSensitive</a></h1>
+      {% if user.is_authenticated %}
+             <nav class="nav">
+                <ul class="center">
+                    {% if user.is_superuser %}
+                    <li><a class="small" href="/admin">Moderation</a></li>
+                    <li> <a class="small" href="{% url 'post_new' %}" >Post New</a></li>
+                     {% endif %}
+                     
+                  </ul>
+              </nav>
+            {% endif %}
+       
+      </header>
+
+{% endblock %}
+        <article class="post-full">
+        {% if post.published_date %}
+        <div class="top-full">
+               <h1 class="center">{{ post.title }}</h1>
+                 {%  if user.is_authenticated and user.username == post.author.username %}
+                 <div class="redactor">
+                  <a href="{% url 'post_edit' pk=post.pk %}"><span class="small blue">Edit</span></a>
+                  <a class="btn btn-default" href="{% url 'post_remove' pk=post.pk %}"><span class="small red">Delete</span></a>
+                </div>
+                  {% endif %}
+               <div class="small center pink">
+                {{ post.published_date|naturaltime }}
+               
+            </div>
+            </div>
+        {% endif %}
+        <div class="content">
+           {% if post.image %}
+        <img src="{{ MEDIA_URL }}{{ post.image.url }}">
+        {% endif %}
+          {% autoescape off %}
+        <p>{{ post.text|linebreaksbr }}</p>
+        {% endautoescape %}
+    </div>
+   
+ </article>
+  <footer class="footer">
+        <p>&copy; Metasensitive.com 2018</p>
+        <p><a href="mailto:metasensitive@yahoo.com?subject=Вопрос по HTML">metasensitive@yahoo.com</a></p>
+      </footer>
+
+        {% endblock %}
+    {% endblock body %}
+   
+    {% block javascript %}{% endblock %}
+  </body>
+</html>

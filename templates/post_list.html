@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+ {% for post in posts %}
+        <article class="post">
+        	<div class="top">
+               
+            <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+            <div class="small pink">
+                 {{ post.published_date|naturaltime }}
+               
+            </div>
+        </div>
+        <div class="content">
+            {% if post.image %}
+        <img src="{{ MEDIA_URL }}{{ post.image.url }}">
+        {% endif %}
+            {% autoescape off %}
+        
+            <p>{{ post.text|linebreaksbr|truncatechars:300 }}</p>
+            {% endautoescape %}
+        </div>
+        </article>
+    {% endfor %}
+  
+    {% endblock %}
+   
+
+
